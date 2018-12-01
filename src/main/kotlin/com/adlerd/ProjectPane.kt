@@ -1,23 +1,23 @@
 package com.adlerd
 
-import javafx.scene.control.Tab
-import javafx.scene.control.TreeCell
-import javafx.scene.control.TreeItem
-import javafx.scene.control.TreeView
+import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.HBox
+import javafx.scene.layout.Priority
 import java.io.File
 
 class ProjectPane(projectPath: File): Tab() {
 
     val contentPane = HBox()
     val projectTree: TreeView<File> = TreeView()
-    val codePane = CodePane()
+    //    val codePane = CodePane()
+    val fileTabPane = TabPane()
     val folderImg: Image
     val genericFileImg: Image
     val javaFileImg: Image
+    val classFileImg: Image
 
 
     init {
@@ -29,7 +29,7 @@ class ProjectPane(projectPath: File): Tab() {
             false
         )
         this.genericFileImg = Image(
-            this::class.java.getResource("/img/java_file.png").toExternalForm(),
+            this::class.java.getResource("/img/generic_file.png").toExternalForm(),
             ICON_SIZE,
             ICON_SIZE,
             true,
@@ -37,6 +37,13 @@ class ProjectPane(projectPath: File): Tab() {
         )
         this.javaFileImg = Image(
             this::class.java.getResource("/img/java_file.png").toExternalForm(),
+            ICON_SIZE,
+            ICON_SIZE,
+            true,
+            false
+        )
+        this.classFileImg = Image(
+            this::class.java.getResource("/img/class_file.png").toExternalForm(),
             ICON_SIZE,
             ICON_SIZE,
             true,
@@ -65,15 +72,17 @@ class ProjectPane(projectPath: File): Tab() {
         projectTree.setOnMouseClicked { event ->
             if (event.button == MouseButton.PRIMARY) {
                 if (event.clickCount == 2) {
-                    codePane.readFile(projectTree.selectionModel.selectedItem.value)
+                    fileTabPane.tabs.add(FileTab(projectTree.selectionModel.selectedItem.value))
                 }
             }
         }
 
-        codePane.prefWidthProperty().bind(contentPane.prefWidthProperty())
-
+        contentPane.spacing = 0.0
         contentPane.isFillHeight = true
-        contentPane.children.addAll(projectTree, codePane)
+        contentPane.children.addAll(projectTree, fileTabPane)
+
+        HBox.setHgrow(projectTree, Priority.NEVER)
+        HBox.setHgrow(fileTabPane, Priority.ALWAYS)
 
         this.content = contentPane
     }
@@ -92,14 +101,13 @@ class ProjectPane(projectPath: File): Tab() {
             }
             item.setGraphic(ImageView(folderImg))
         } else {
-//            if (item.value.name.endsWith(suffix = ".java", ignoreCase = true)) {
-//                item.setGraphic(ImageView(ProjectPane::class.java.getResource("img/java_file.png").toExternalForm()))
-//            } else if (item.value.name.endsWith(suffix = ".class", ignoreCase = true)) {
-//                item.setGraphic(ImageView(ProjectPane::class.java.getResource("img/java_file.png").toExternalForm()))
-//            } else {
-            item.setGraphic(ImageView(genericFileImg))
-//                item.setGraphic(ImageView(ProjectPane::class.java.getResource("/img/generic_file.png").toExternalForm()))
-//            }
+            if (item.value.name.endsWith(suffix = ".java", ignoreCase = true)) {
+                item.setGraphic(ImageView(javaFileImg))
+            } else if (item.value.name.endsWith(suffix = ".class", ignoreCase = true)) {
+                item.setGraphic(ImageView(classFileImg))
+            } else {
+                item.setGraphic(ImageView(genericFileImg))
+            }
         }
         return item
     }

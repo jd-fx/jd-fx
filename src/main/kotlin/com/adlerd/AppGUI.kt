@@ -1,6 +1,9 @@
 package com.adlerd
 
 import javafx.application.Application
+import javafx.geometry.Insets
+import javafx.geometry.Orientation
+import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.image.Image
@@ -9,13 +12,16 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import java.io.File
 import kotlin.system.exitProcess
 
-class JDGUI : Application() {
+class AppGUI : Application() {
+
+    lateinit var window: Stage
 
     val root= VBox()
 
@@ -49,41 +55,160 @@ class JDGUI : Application() {
     val bodyPane = BorderPane()
     val projectTabsPane = TabPane()
 
-    lateinit var toolBar: ButtonBar
+
+    val noOpenLabel = Label("No files are open...")
+    val instructionsLabel = Label(
+        "Open a file with menu \"File > OpenFile...\"\n" +
+                "Open recent files with menu \"File > Recent Files\"\n" +
+                "Drag and drop files from your file manager"
+    )
+    val centerTextBox = VBox(noOpenLabel, instructionsLabel)
+
+
+    lateinit var toolBar: HBox
+    lateinit var bottomBar: HBox
 
     lateinit var menuBar: MenuBar
 
-    override fun start(window: Stage) {
+    override fun start(stage: Stage) {
+
+        window = stage
 
         toolBar = initButtonBar()
+        bottomBar = initBottomBar()
 
+        bodyPane.top = toolBar
         bodyPane.center = projectTabsPane
+        bodyPane.bottom = bottomBar
         bodyPane.prefWidthProperty().bind(root.widthProperty())
         bodyPane.prefHeightProperty().bind(root.heightProperty())
 
-        menuBar = initMenuBar(window)
+        menuBar = initMenuBar()
 
         root.children.addAll(menuBar, bodyPane)
 
-        val scene = Scene(root, 500.0, 350.0)
+        val scene = Scene(root, 600.0, 400.0)
         window.scene = scene
+        window.title = "Java Decompiler"
+        window.icons.add(Image(AppGUI::class.java.getResource("/img/folder.png").toExternalForm()))
         window.show()
     }
 
-    private fun initButtonBar(): ButtonBar {
-        val buttonBar = ButtonBar()
+    private fun initButtonBar(): HBox {
+        val buttonBar = HBox()
+        buttonBar.minHeight = 24.0
+        buttonBar.spacing = 2.0
+        buttonBar.padding = Insets(2.0)
+
+        val vertSeparator1 = Separator()
+        vertSeparator1.orientation = Orientation.VERTICAL
+
+        val vertSeparator2 = Separator()
+        vertSeparator2.orientation = Orientation.VERTICAL
 
         val openButton = Button()
-        val Button = Button()
+        openButton.graphic = ImageView(
+            Image(
+                AppGUI::class.java.getResource("/img/folder.png").toExternalForm(),
+                ICON_SIZE,
+                ICON_SIZE,
+                true,
+                false
+            )
+        )
+        openButton.setOnAction {
+            openProjectLocation(stage = window)
+        }
+        val openTypeButton = Button()
+        openTypeButton.graphic = ImageView(
+            Image(
+                AppGUI::class.java.getResource("/img/folder.png").toExternalForm(),
+                ICON_SIZE,
+                ICON_SIZE,
+                true,
+                false
+            )
+        )
         val searchButton = Button()
-        val forwardButton = Button()
+        searchButton.graphic = ImageView(
+            Image(
+                AppGUI::class.java.getResource("/img/folder.png").toExternalForm(),
+                ICON_SIZE,
+                ICON_SIZE,
+                true,
+                false
+            )
+        )
         val backButton = Button()
+        backButton.graphic = ImageView(
+            Image(
+                AppGUI::class.java.getResource("/img/folder.png").toExternalForm(),
+                ICON_SIZE,
+                ICON_SIZE,
+                true,
+                false
+            )
+        )
+        val forwardButton = Button()
+        forwardButton.graphic = ImageView(
+            Image(
+                AppGUI::class.java.getResource("/img/folder.png").toExternalForm(),
+                ICON_SIZE,
+                ICON_SIZE,
+                true,
+                false
+            )
+        )
 
-        buttonBar.buttons.addAll()
+        buttonBar.children.addAll(
+            openButton,
+            vertSeparator1,
+            openTypeButton,
+            searchButton,
+            vertSeparator2,
+            backButton,
+            forwardButton
+        )
         return buttonBar
     }
 
-    private fun initMenuBar(stage: Stage): MenuBar {
+    private fun initBottomBar(): HBox {
+        val bottomBar = HBox()
+        bottomBar.minHeight = 24.0
+        bottomBar.spacing = 2.0
+        bottomBar.padding = Insets(2.0)
+
+        val findLabel = Label("Find:")
+        findLabel.alignment = Pos.CENTER
+        val findTypeBox = ComboBox<String>()
+        findTypeBox.isEditable = true
+        val nextButton = Button("Next")
+        nextButton.graphic = ImageView(
+            Image(
+                AppGUI::class.java.getResource("/img/folder.png").toExternalForm(),
+                ICON_SIZE,
+                ICON_SIZE,
+                true,
+                false
+            )
+        )
+        val prevButton = Button("Previous")
+        prevButton.graphic = ImageView(
+            Image(
+                AppGUI::class.java.getResource("/img/folder.png").toExternalForm(),
+                ICON_SIZE,
+                ICON_SIZE,
+                true,
+                false
+            )
+        )
+        val caseCheckBox = CheckBox("Case sensitive")
+
+        bottomBar.children.addAll(findLabel, findTypeBox, nextButton, prevButton, caseCheckBox)
+        return bottomBar
+    }
+
+    private fun initMenuBar(): MenuBar {
         val bar = MenuBar()
 
         bar.prefWidthProperty().bind(root.widthProperty())
@@ -93,7 +218,7 @@ class JDGUI : Application() {
         openFileItem.accelerator = KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN)
         openFileItem.graphic = ImageView(Image(this::class.java.getResource("/img/folder.png").toExternalForm()))
         openFileItem.setOnAction {
-            openProjectLocation(stage = stage)
+            openProjectLocation(stage = window)
         }
         closeItem.accelerator = KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
         closeItem.setOnAction {  }
@@ -167,9 +292,6 @@ class JDGUI : Application() {
     }
 
     companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            Application.launch(JDGUI::class.java)
-        }
+        private const val ICON_SIZE = 14.0
     }
 }
