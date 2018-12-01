@@ -164,7 +164,6 @@ class JDGUI : Application() {
         } catch (e: RuntimeException) {
             // Do nothing...
         }
-
     }
 
     companion object {

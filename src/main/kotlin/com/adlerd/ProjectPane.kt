@@ -6,6 +6,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.HBox
 import java.io.File
 
@@ -20,12 +21,31 @@ class ProjectPane(projectPath: File): Tab() {
 
 
     init {
-        this.folderImg = Image(this::class.java.getResource("/img/package.png").toExternalForm())
-        this.genericFileImg = Image(this::class.java.getResource("/img/java_file.png").toExternalForm())
-        this.javaFileImg = Image(this::class.java.getResource("/img/java_file.png").toExternalForm())
+        this.folderImg = Image(
+            this::class.java.getResource("/img/package.png").toExternalForm(),
+            ICON_SIZE,
+            ICON_SIZE,
+            true,
+            false
+        )
+        this.genericFileImg = Image(
+            this::class.java.getResource("/img/java_file.png").toExternalForm(),
+            ICON_SIZE,
+            ICON_SIZE,
+            true,
+            false
+        )
+        this.javaFileImg = Image(
+            this::class.java.getResource("/img/java_file.png").toExternalForm(),
+            ICON_SIZE,
+            ICON_SIZE,
+            true,
+            false
+        )
 
         this.text = projectName(projectPath)
         // Set up project's TreeView and its TreeCells
+        projectTree.isEditable = false
         projectTree.root = createTree(projectPath)
         projectTree.setCellFactory {
             object : TreeCell<File>() {
@@ -42,6 +62,17 @@ class ProjectPane(projectPath: File): Tab() {
             }
         }
 
+        projectTree.setOnMouseClicked { event ->
+            if (event.button == MouseButton.PRIMARY) {
+                if (event.clickCount == 2) {
+                    codePane.readFile(projectTree.selectionModel.selectedItem.value)
+                }
+            }
+        }
+
+        codePane.prefWidthProperty().bind(contentPane.prefWidthProperty())
+
+        contentPane.isFillHeight = true
         contentPane.children.addAll(projectTree, codePane)
 
         this.content = contentPane
@@ -71,5 +102,9 @@ class ProjectPane(projectPath: File): Tab() {
 //            }
         }
         return item
+    }
+
+    companion object {
+        private const val ICON_SIZE = 14.0
     }
 }
