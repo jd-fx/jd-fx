@@ -1,0 +1,12 @@
+.idea
+out
+build
+
+*.class
+*.log
+*.jar
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+*.iml
