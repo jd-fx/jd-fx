@@ -53,16 +53,7 @@ class AppGUI : Application() {
     val aboutItem = MenuItem("About...")
 
     val bodyPane = BorderPane()
-    val projectTabsPane = TabPane()
-
-
-    val noOpenLabel = Label("No files are open...")
-    val instructionsLabel = Label(
-        "Open a file with menu \"File > OpenFile...\"\n" +
-                "Open recent files with menu \"File > Recent Files\"\n" +
-                "Drag and drop files from your file manager"
-    )
-    val centerTextBox = VBox(noOpenLabel, instructionsLabel)
+    val projectTabsPane = ProjectTabPane()
 
 
     lateinit var toolBar: HBox
@@ -88,6 +79,7 @@ class AppGUI : Application() {
         root.children.addAll(menuBar, bodyPane)
 
         val scene = Scene(root, 600.0, 400.0)
+        scene.stylesheets.add(AppGUI::class.java.getResource("/style.css").toExternalForm())
         window.scene = scene
         window.title = "Java Decompiler"
         window.icons.add(Image(AppGUI::class.java.getResource("/img/folder.png").toExternalForm()))
@@ -278,14 +270,14 @@ class AppGUI : Application() {
     }
 
     fun openProjectLocation(stage: Stage) {
-        val path: File
+        val project: File
 
         try {
             val directoryChooser = DirectoryChooser()
             directoryChooser.title = "Project Location"
-            path = directoryChooser.showDialog(stage.owner)
-            println("PROJECT_PATH: ${path.absolutePath}")
-            projectTabsPane.tabs.add(ProjectPane(path))
+            project = directoryChooser.showDialog(stage.owner)
+            println("PROJECT_PATH: ${project.absolutePath}")
+            projectTabsPane.tabPane.tabs.add(ProjectPane(project))
         } catch (e: RuntimeException) {
             // Do nothing...
         }

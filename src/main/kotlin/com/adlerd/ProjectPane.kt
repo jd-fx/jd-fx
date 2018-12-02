@@ -1,11 +1,12 @@
 package com.adlerd
 
+import javafx.geometry.Insets
 import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
-import javafx.scene.layout.HBox
-import javafx.scene.layout.Priority
+import javafx.scene.layout.*
+import javafx.scene.paint.Paint
 import java.io.File
 
 class ProjectPane(projectPath: File): Tab() {
@@ -68,7 +69,6 @@ class ProjectPane(projectPath: File): Tab() {
                 }
             }
         }
-
         projectTree.setOnMouseClicked { event ->
             if (event.button == MouseButton.PRIMARY) {
                 if (event.clickCount == 2) {
@@ -83,6 +83,8 @@ class ProjectPane(projectPath: File): Tab() {
 
         HBox.setHgrow(projectTree, Priority.NEVER)
         HBox.setHgrow(fileTabPane, Priority.ALWAYS)
+
+        fileTabPane.background = Background(BackgroundFill(Paint.valueOf("white"), CornerRadii.EMPTY, Insets.EMPTY))
 
         this.content = contentPane
     }

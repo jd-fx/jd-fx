@@ -13,11 +13,25 @@ repositories {
 }
 
 dependencies {
+    compile 'com.jfoenix:jfoenix:8.0.8' // Java 8
+//    compile 'com.jfoenix:jfoenix:9.0.8' // Java 9
     compile "org.fxmisc.richtext:richtextfx:1.0.0-SNAPSHOT"
     compile "org.fxmisc.cssfx:cssfx:1.0.0"
     compile "com.aquafx-project:aquafx:0.2"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
+
+task releaseJar(type: Jar) {
+    manifest {
+        attributes'Implementation-Title': 'JD-FX',
+                'Implementation-Version': version,
+                'Main-Class': 'com.adlerd.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
