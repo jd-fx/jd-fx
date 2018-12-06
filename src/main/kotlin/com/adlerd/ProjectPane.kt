@@ -1,6 +1,7 @@
 package com.adlerd
 
 import javafx.geometry.Insets
+import javafx.geometry.Orientation
 import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -12,9 +13,15 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.net.URLConnection
 
+/**
+ * Pane which opens the directory (planned to eventually be a compressed file like .zip or .jar) passed into
+ * it -> @param projectPath. Holds a FileTree of all project files and a TabPane for each file in the file
+ * tree to open into.
+ */
 class ProjectPane(projectPath: File): Tab() {
 
-    private val contentPane = HBox()
+    //    private val contentPane = HBox()
+    private val contentPane = SplitPane()
     private val projectTree = TreeView<File>()
     private val fileTabPane = TabPane()
     private val packageImg: Image
@@ -86,17 +93,30 @@ class ProjectPane(projectPath: File): Tab() {
                 }
             }
         }
+
+        // Allow for double click in tree pane to open file in a new tab
         projectTree.setOnMouseClicked { event ->
             if (event.button == MouseButton.PRIMARY) {
                 if (event.clickCount == 2) {
-                    fileTabPane.tabs.add(FileTab(projectTree.selectionModel.selectedItem.value))
+                    val selectedFile = projectTree.selectionModel.selectedItem.value
+
+                    if (selectedFile.isFile) {
+                        // Get the mime value before the '/'
+                        //     (Ex. text/plain -> return text)
+                        when (selectedFile.fileType.split("/")[0]) {
+                            "text" -> fileTabPane.tabs.add(FileTab(selectedFile))
+                            "image" -> fileTabPane.tabs.add(ImageTab(selectedFile))
+
+                            else -> println("ERROR! Cannot open $selectedFile...")
+                        }
+                    }
                 }
             }
         }
 
-        contentPane.spacing = 0.0
-        contentPane.isFillHeight = true
-        contentPane.children.addAll(projectTree, fileTabPane)
+        contentPane.orientation = Orientation.HORIZONTAL
+        contentPane.setDividerPosition(1, 150.0)
+        contentPane.items.addAll(projectTree, fileTabPane)
 
         HBox.setHgrow(projectTree, Priority.NEVER)
         HBox.setHgrow(fileTabPane, Priority.ALWAYS)
