@@ -180,7 +180,8 @@ class AppGUI : Application() {
             )
         )
         openFileItem.setOnAction {
-            openProjectLocation(stage = window)
+            //            openFileLocation(stage = window)
+            openDirectoryLocation(stage = window)
         }
         closeItem.setOnAction {  }
         saveItem.graphic = ImageView(
@@ -340,6 +341,34 @@ class AppGUI : Application() {
             println("ERROR!")
             e.printStackTrace()
             // Do nothing...
+        }
+    }
+
+    fun openFileLocation(stage: Stage) {
+        val project: File
+
+        try {
+            val fileChooser = FileChooser()
+            fileChooser.title = "Project Location"
+            fileChooser.initialDirectory = File(System.getProperty("user.home"))
+            fileChooser.extensionFilters.addAll(
+                FileChooser.ExtensionFilter(
+                    "Java Binaries",
+                    "*.class",
+                    "*.ear",
+                    "*.jar",
+                    "*.java",
+                    "*.log",
+                    "*.war",
+                    "*.zip"
+                ),
+                FileChooser.ExtensionFilter("All Files", "*.*")
+            )
+            project = fileChooser.showOpenDialog(stage.owner)
+            println("PROJECT_PATH: ${project.absolutePath}")
+            projectTabsPane.tabPane.tabs.add(ProjectPane(project))
+        } catch (e: RuntimeException) {
+
         }
     }
 
