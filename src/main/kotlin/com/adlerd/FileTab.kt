@@ -35,8 +35,12 @@ class FileTab(file: File) : Tab() {
 
             this.content = scrollPane
 
+            // Ensure CodePane is clear
             codePane.clearText()
+            // Read file into CodePane
             codePane.readFile(file)
+            // Show the beginning of the file when opening
+            codePane.scrollToPixel(0.0, 0.0)
         }
     }
 
