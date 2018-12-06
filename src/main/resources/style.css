@@ -1,0 +1,102 @@
+#openBtn {
+    -fx-background-image: url(/img/open.png);
+    -fx-background-size: 16px 16px;
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#openTypeBtn {
+    -fx-background-image: url(/img/open_type.png);
+    -fx-background-size: 16px 16px;
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#searchBtn {
+    -fx-background-image: url(/img/search_src.png);
+    -fx-background-size: 16px 16px;
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#backBtn {
+    -fx-background-image: url(/img/backward_nav.png);
+    -fx-background-size: 16px 16px;
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#forwardBtn {
+    -fx-background-image: url(/img/forward_nav.png);
+    -fx-background-size: 16px 16px;
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#findLabel {
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+}
+
+#findBox {
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+}
+
+#nextBtn {
+    -fx-background-image: url(/img/next_nav.png);
+    -fx-background-size: 16px 16px;
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#prevBtn {
+    -fx-background-image: url(/img/next_nav.png);
+    -fx-background-size: 16px 16px;
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}

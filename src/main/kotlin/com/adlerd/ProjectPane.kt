@@ -7,51 +7,68 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.*
 import javafx.scene.paint.Paint
+import java.io.BufferedInputStream
+import java.io.ByteArrayInputStream
 import java.io.File
+import java.net.URLConnection
 
 class ProjectPane(projectPath: File): Tab() {
 
-    val contentPane = HBox()
-    val projectTree: TreeView<File> = TreeView()
-    //    val codePane = CodePane()
-    val fileTabPane = TabPane()
-    val folderImg: Image
-    val genericFileImg: Image
-    val javaFileImg: Image
-    val classFileImg: Image
+    private val contentPane = HBox()
+    private val projectTree = TreeView<File>()
+    private val fileTabPane = TabPane()
+    private val packageImg: Image
+    private val genericFileImg: Image
+    private val javaFileImg: Image
+    private val classFileImg: Image
 
+    private val File.fileType: String
+        get() {
+            var mimeType = ""
+            val stream = BufferedInputStream(ByteArrayInputStream(this.readBytes()))
+            // Test for mime type
+            try {
+                mimeType = URLConnection.guessContentTypeFromStream(stream)
+                stream.close()
+            } catch (e: IllegalStateException) {
+
+            } finally {
+                stream.close()
+            }
+            return mimeType
+        }
 
     init {
-        this.folderImg = Image(
-            this::class.java.getResource("/img/package.png").toExternalForm(),
+        this.packageImg = Image(
+            javaClass.classLoader.getResource("img/small_folder.png").toExternalForm(),
             ICON_SIZE,
             ICON_SIZE,
             true,
             false
         )
         this.genericFileImg = Image(
-            this::class.java.getResource("/img/generic_file.png").toExternalForm(),
+            javaClass.classLoader.getResource("img/small_generic_file.png").toExternalForm(),
             ICON_SIZE,
             ICON_SIZE,
             true,
             false
         )
         this.javaFileImg = Image(
-            this::class.java.getResource("/img/java_file.png").toExternalForm(),
+            javaClass.classLoader.getResource("img/small_java_file.png").toExternalForm(),
             ICON_SIZE,
             ICON_SIZE,
             true,
             false
         )
         this.classFileImg = Image(
-            this::class.java.getResource("/img/class_file.png").toExternalForm(),
+            javaClass.classLoader.getResource("img/small_class_file.png").toExternalForm(),
             ICON_SIZE,
             ICON_SIZE,
             true,
             false
         )
 
-        this.text = projectName(projectPath)
+        this.text = projectPath.name
         // Set up project's TreeView and its TreeCells
         projectTree.isEditable = false
         projectTree.root = createTree(projectPath)
@@ -89,11 +106,6 @@ class ProjectPane(projectPath: File): Tab() {
         this.content = contentPane
     }
 
-    private fun projectName(path: File): String {
-        val pathAsList = path.absolutePath.split('/')
-        return pathAsList[pathAsList.size - 1]
-    }
-
     private fun createTree(file: File): TreeItem<File> {
         val item = TreeItem(file)
         val childs = file.listFiles()
@@ -101,7 +113,7 @@ class ProjectPane(projectPath: File): Tab() {
             for (child in childs) {
                 item.children.add(createTree(child))
             }
-            item.setGraphic(ImageView(folderImg))
+            item.setGraphic(ImageView(packageImg))
         } else {
             if (item.value.name.endsWith(suffix = ".java", ignoreCase = true)) {
                 item.setGraphic(ImageView(javaFileImg))
@@ -115,6 +127,6 @@ class ProjectPane(projectPath: File): Tab() {
     }
 
     companion object {
-        private const val ICON_SIZE = 14.0
+        private const val ICON_SIZE = 16.0
     }
 }
