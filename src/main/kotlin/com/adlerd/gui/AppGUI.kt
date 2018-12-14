@@ -1,5 +1,7 @@
-package com.adlerd
+package com.adlerd.gui
 
+import com.adlerd.gui.panes.ProjectPane
+import com.adlerd.gui.tabs.ProjectTab
 import javafx.application.Application
 import javafx.geometry.Insets
 import javafx.geometry.Orientation
@@ -13,11 +15,15 @@ import javafx.scene.input.KeyCombination
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
-import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import org.fxmisc.cssfx.CSSFX
+import java.awt.Desktop
 import java.io.File
+import java.io.IOException
+import java.net.URISyntaxException
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 class AppGUI : Application() {
@@ -85,6 +91,16 @@ class AppGUI : Application() {
         window.scene = scene
         window.title = "Java Decompiler"
         window.icons.add(Image(AppGUI::class.java.getResource("/img/jd_icon_128.png").toExternalForm()))
+
+        // Check if project directory needs to be set up
+        //TODO: Check props file for default workspace, otherwise have alert which asks on first run if you want the default "~/.jd_fx/" or pick a custom folder
+        if (!projectWorkspace.exists()) {
+            projectWorkspace.mkdirs()
+            println("INFO: Project workspace HAS BEEN CREATED at \"${projectWorkspace.absolutePath}\"")
+        } else {
+            println("INFO: Project workspace ALREADY EXISTS at \"${projectWorkspace.absolutePath}\"")
+        }
+
         window.show()
     }
 
@@ -108,7 +124,7 @@ class AppGUI : Application() {
         val openButton = Button()
         openButton.id = "openBtn"
         openButton.setOnAction {
-            openDirectoryLocation(stage = window)
+            selectFile(stage = window)
         }
         val openTypeButton = Button()
         openTypeButton.id = "openTypeBtn"
@@ -180,8 +196,7 @@ class AppGUI : Application() {
             )
         )
         openFileItem.setOnAction {
-            //            openFileLocation(stage = window)
-            openDirectoryLocation(stage = window)
+            selectFile(stage = window)
         }
         closeItem.setOnAction {  }
         saveItem.graphic = ImageView(
@@ -263,16 +278,18 @@ class AppGUI : Application() {
         searchMenu.items.addAll(searchItem)
 
         // Help menu
-        wikiItem.setOnAction {  }
-        prefItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/preferences.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        wikiItem.setOnAction {
+            try {
+                Desktop.getDesktop().browse(URL("https://github.com/dadler64/jd-fx/wiki").toURI())
+            } catch (e: IOException) {
+                println("ERROR: Could not open link")
+                e.printStackTrace()
+            } catch (e: URISyntaxException) {
+                println("ERROR: Bad URI")
+                e.printStackTrace()
+            }
+        }
+        prefItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/preferences.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, false, true))
         prefItem.setOnAction {  }
         aboutItem.setOnAction {  }
         helpMenu.items.addAll(wikiItem, SeparatorMenuItem(), prefItem, aboutItem)
@@ -286,49 +303,36 @@ class AppGUI : Application() {
         return bar
     }
 
-    fun initAccelerators() {
-        val system = System.getProperty("os.name")
-
-        if (system.startsWith(prefix = "mac", ignoreCase = true)) {
-            openFileItem.accelerator = KeyCodeCombination(KeyCode.O, KeyCombination.META_DOWN)
-            closeItem.accelerator = KeyCodeCombination(KeyCode.W, KeyCombination.META_DOWN)
-            saveItem.accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN)
-            saveAllItem.accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN, KeyCombination.ALT_DOWN)
-            exitItem.accelerator = KeyCodeCombination(KeyCode.Q, KeyCombination.META_DOWN)
-            copyItem.accelerator = KeyCodeCombination(KeyCode.C, KeyCombination.META_DOWN)
-            pasteItem.accelerator = KeyCodeCombination(KeyCode.V, KeyCombination.META_DOWN)
-            selectAllItem.accelerator = KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN)
-            findItem.accelerator = KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
-            openTypeItem.accelerator =
-                    KeyCodeCombination(KeyCode.T, KeyCombination.META_DOWN, KeyCombination.SHIFT_DOWN)
-            openTypeHierarchyItem.accelerator = KeyCodeCombination(KeyCode.F4)
-            goToLineItem.accelerator = KeyCodeCombination(KeyCode.L, KeyCombination.META_DOWN)
-            searchItem.accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.META_DOWN, KeyCombination.SHIFT_DOWN)
-            prefItem.accelerator = KeyCodeCombination(KeyCode.COMMA, KeyCombination.META_DOWN)
-            aboutItem.accelerator = KeyCodeCombination(KeyCode.F1)
-        } else {
-            openFileItem.accelerator = KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN)
-            closeItem.accelerator = KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN)
-            saveItem.accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN)
-            saveAllItem.accelerator =
-                    KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN, KeyCombination.CONTROL_DOWN)
-            exitItem.accelerator = KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN)
-            copyItem.accelerator = KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN)
-            pasteItem.accelerator = KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN)
-            selectAllItem.accelerator = KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN)
-            findItem.accelerator = KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
-            openTypeItem.accelerator =
-                    KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN)
-            openTypeHierarchyItem.accelerator = KeyCodeCombination(KeyCode.F4)
-            goToLineItem.accelerator = KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN)
-            searchItem.accelerator =
-                    KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN)
-            prefItem.accelerator = KeyCodeCombination(KeyCode.COMMA, KeyCombination.CONTROL_DOWN)
-            aboutItem.accelerator = KeyCodeCombination(KeyCode.F1)
-        }
+    private fun addToRecents(projectName: String, projectDir: File) {
+        this.recentsMenu.items.add(0, MenuItem(projectName))
+        AppGUI.projectList[projectName] = projectDir
     }
 
-    fun openDirectoryLocation(stage: Stage) {
+    private fun initAccelerators() {
+        val system = System.getProperty("os.name")
+        println("Current System: $system")
+
+        val controlKey = if (system.startsWith(prefix = "mac", ignoreCase = true)) KeyCombination.META_DOWN else KeyCombination.CONTROL_DOWN
+
+        openFileItem.accelerator = KeyCodeCombination(KeyCode.O, controlKey)
+        closeItem.accelerator = KeyCodeCombination(KeyCode.W, controlKey)
+        saveItem.accelerator = KeyCodeCombination(KeyCode.S, controlKey)
+        saveAllItem.accelerator = KeyCodeCombination(KeyCode.S, controlKey, KeyCombination.ALT_DOWN)
+        exitItem.accelerator = KeyCodeCombination(KeyCode.Q, controlKey)
+        copyItem.accelerator = KeyCodeCombination(KeyCode.C, controlKey)
+        pasteItem.accelerator = KeyCodeCombination(KeyCode.V, controlKey)
+        selectAllItem.accelerator = KeyCodeCombination(KeyCode.A, controlKey)
+        findItem.accelerator = KeyCodeCombination(KeyCode.F, controlKey)
+        openTypeItem.accelerator = KeyCodeCombination(KeyCode.T, controlKey, KeyCombination.SHIFT_DOWN)
+        openTypeHierarchyItem.accelerator = KeyCodeCombination(KeyCode.F4)
+        goToLineItem.accelerator = KeyCodeCombination(KeyCode.L, controlKey)
+        searchItem.accelerator = KeyCodeCombination(KeyCode.F, controlKey)
+        prefItem.accelerator = KeyCodeCombination(KeyCode.COMMA, controlKey)
+        aboutItem.accelerator = KeyCodeCombination(KeyCode.F1)
+    }
+
+    /*
+    private fun openDirectoryLocation(stage: Stage) {
         val project: File
 
         try {
@@ -336,17 +340,16 @@ class AppGUI : Application() {
             directoryChooser.title = "Project Location"
             project = directoryChooser.showDialog(stage.owner)
             println("PROJECT_PATH: ${project.absolutePath}")
-            projectTabsPane.tabPane.tabs.add(ProjectPane(project))
+            projectPane.tabPane.tabs.add(ProjectTab(project))
         } catch (e: RuntimeException) {
-            println("ERROR!")
-            e.printStackTrace()
             // Do nothing...
+        } catch (ise: IllegalStateException) {
+
         }
     }
+    */
 
-    fun openFileLocation(stage: Stage) {
-        val project: File
-
+    private fun selectFile(stage: Stage) {
         try {
             val fileChooser = FileChooser()
             fileChooser.title = "Project Location"
@@ -364,15 +367,49 @@ class AppGUI : Application() {
                 ),
                 FileChooser.ExtensionFilter("All Files", "*.*")
             )
-            project = fileChooser.showOpenDialog(stage.owner)
-            println("PROJECT_PATH: ${project.absolutePath}")
-            projectTabsPane.tabPane.tabs.add(ProjectPane(project))
+            val jarFile = fileChooser.showOpenDialog(stage.owner)
+            val projectName = jarFile.nameWithoutExtension
+            val projectDir = File("$projectWorkspace/$projectName")
+            // Check if the desired directory exists
+            if (!projectDir.exists()) {
+                projectDir.delete() // I'm lazy right now so we're deleting the directory
+            }
+                // Create project directory
+                projectDir.mkdir()
+                // Command to move to the project directory and unpack the Jar file there
+                "jar xf ${jarFile.absolutePath}".runCommand(projectDir, 1)
+
+                this.projectPane.tabPane.tabs.add(ProjectTab(projectDir))
+                // Add project to recents list
+                addToRecents(projectName, projectDir)
         } catch (e: RuntimeException) {
+            println("ERROR: Could not open file or set up project!")
+            e.printStackTrace()
+        } catch (e: IllegalStateException) {
 
         }
     }
 
+    private fun String.runCommand(workingDir: File, timeLimit: Long): String {
+        return try {
+            val parts = this.split("\\s".toRegex())
+            val proc = ProcessBuilder(*parts.toTypedArray())
+                .directory(workingDir)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .start()
+
+            proc.waitFor(timeLimit, TimeUnit.SECONDS)
+            proc.inputStream.bufferedReader().readText()
+        } catch(e: IOException) {
+            e.printStackTrace()
+            "ERROR"
+        }
+    }
+
     companion object {
-        private const val ICON_SIZE = 16.0
+        private const val MENU_ICON_SIZE = 16.0
+        private const val TIMER_LENGTH = 2L
+        val projectList = HashMap<String, File>()
     }
 }
