@@ -100,3 +100,9 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
+
+#buttonBar {
+    -fx-border-color: lightgrey;
+    -fx-border-width: 1px;
+    /*-fx-pref-height: 28px;*/
+}

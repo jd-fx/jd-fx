@@ -1,4 +1,4 @@
-package com.adlerd
+package com.adlerd.gui
 
 import org.fxmisc.richtext.CodeArea
 import org.fxmisc.richtext.LineNumberFactory

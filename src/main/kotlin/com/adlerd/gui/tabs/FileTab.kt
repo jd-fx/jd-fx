@@ -15,14 +15,14 @@ class FileTab(file: File): CustomTab() {
             this.text = file.name
             icon = when (file.extension) {
                 "java" -> Image(
-                    this::class.java.getResource("/img/java_file.png").toExternalForm(),
+                    FileTab::class.java.getResource("/img/java_file.png").toExternalForm(),
                     ICON_SIZE,
                     ICON_SIZE,
                     true,
                     false
                 )
                 else -> Image(
-                    this::class.java.getResource("/img/folder.png").toExternalForm(),
+                    FileTab::class.java.getResource("/img/folder.png").toExternalForm(),
                     ICON_SIZE,
                     ICON_SIZE,
                     true,

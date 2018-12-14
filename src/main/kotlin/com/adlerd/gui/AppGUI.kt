@@ -30,7 +30,7 @@ class AppGUI : Application() {
 
     lateinit var window: Stage
 
-    val root= VBox()
+    val root = VBox()
 
     val fileMenu = Menu("File")
     val openFileItem = MenuItem("Open File...")
@@ -60,7 +60,9 @@ class AppGUI : Application() {
     val aboutItem = MenuItem("About...")
 
     val bodyPane = BorderPane()
-    val projectTabsPane = ProjectTabPane()
+    val projectPane = ProjectPane()
+
+    val projectWorkspace = File("${System.getProperty("user.home")}/.jd_fx")
 
 
     lateinit var toolBar: HBox
@@ -71,13 +73,12 @@ class AppGUI : Application() {
     override fun start(stage: Stage) {
 
         window = stage
-        CSSFX.start(window)
 
         toolBar = initButtonBar()
         bottomBar = initBottomBar()
 
         bodyPane.top = toolBar
-        bodyPane.center = projectTabsPane
+        bodyPane.center = projectPane
         bodyPane.bottom = bottomBar
         bodyPane.prefWidthProperty().bind(root.widthProperty())
         bodyPane.prefHeightProperty().bind(root.heightProperty())
@@ -86,8 +87,10 @@ class AppGUI : Application() {
 
         root.children.addAll(menuBar, bodyPane)
 
-        val scene = Scene(root, 700.0, 400.0)
+        val scene = Scene(root, 800.0, 500.0)
+        CSSFX.start()
         scene.stylesheets.add(AppGUI::class.java.getResource("/style.css").toExternalForm())
+        menuBar.isUseSystemMenuBar = true
         window.scene = scene
         window.title = "Java Decompiler"
         window.icons.add(Image(AppGUI::class.java.getResource("/img/jd_icon_128.png").toExternalForm()))
@@ -109,9 +112,8 @@ class AppGUI : Application() {
      */
     private fun initButtonBar(): HBox {
         val buttonBar = HBox()
-        buttonBar.minHeight = 24.0
-        buttonBar.prefHeight = 24.0
-        buttonBar.maxHeight = 24.0
+        buttonBar.id = "buttonBar"
+        buttonBar.minHeight = 30.0
         buttonBar.spacing = 2.0
         buttonBar.padding = Insets(2.0)
 
@@ -152,14 +154,15 @@ class AppGUI : Application() {
      */
     private fun initBottomBar(): HBox {
         val bottomBar = HBox()
-        bottomBar.minHeight = 24.0
+        bottomBar.id = "bottomBar"
+        bottomBar.minHeight = 30.0
         bottomBar.spacing = 5.0
         bottomBar.padding = Insets(2.0)
 
         val findLabel = Label("Find:")
         findLabel.id = "findLabel"
         val findTypeBox = ComboBox<String>()
-        findTypeBox.items.addAll("id", "name", "text")
+        findTypeBox.items.addAll("id", "title", "text")
         findTypeBox.value = findTypeBox.items[0]
         findTypeBox.id = "findBox"
         findTypeBox.isEditable = true
@@ -186,38 +189,14 @@ class AppGUI : Application() {
         bar.useSystemMenuBarProperty()
 
         // File menu
-        openFileItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/open.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        openFileItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/open.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, true, false))
         openFileItem.setOnAction {
             selectFile(stage = window)
         }
-        closeItem.setOnAction {  }
-        saveItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/save.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        closeItem.setOnAction { this.projectPane }
+        saveItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/save.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, true, false))
         saveItem.setOnAction {  }
-        saveAllItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/save_all.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        saveAllItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/save_all.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, true, false))
         saveAllItem.setOnAction {  }
         exitItem.setOnAction {
             exitProcess(1)
@@ -225,55 +204,23 @@ class AppGUI : Application() {
         fileMenu.items.addAll(openFileItem, SeparatorMenuItem(), closeItem, SeparatorMenuItem(), saveItem, saveAllItem, SeparatorMenuItem(), recentsMenu, SeparatorMenuItem(), exitItem)
 
         // Edit menu
-        copyItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/copy.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        copyItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/copy.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, true, false))
         copyItem.setOnAction {  }
-        pasteItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/paste.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        pasteItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/paste.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, false, true))
         pasteItem.setOnAction {  }
         selectAllItem.setOnAction {  }
         findItem.setOnAction {  }
         editMenu.items.addAll(copyItem, pasteItem, SeparatorMenuItem(), selectAllItem, SeparatorMenuItem(), findItem)
 
         // Navigation menu
-        openTypeItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/open_type.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        openTypeItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/open_type.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, false, true))
         openTypeItem.setOnAction {  }
         openTypeHierarchyItem.setOnAction {  }
         goToLineItem.setOnAction {  }
         navMenu.items.addAll(openTypeItem, openTypeHierarchyItem, goToLineItem)
 
         // Search menu
-        searchItem.graphic = ImageView(
-            Image(
-                this::class.java.getResource("/img/search_src.png").toExternalForm(),
-                ICON_SIZE,
-                ICON_SIZE,
-                true,
-                false
-            )
-        )
+        searchItem.graphic = ImageView(Image(AppGUI::class.java.getResource("/img/search_src.png").toExternalForm(), MENU_ICON_SIZE, MENU_ICON_SIZE, false, true))
         searchItem.setOnAction {  }
         searchMenu.items.addAll(searchItem)
 

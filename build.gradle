@@ -15,7 +15,6 @@ repositories {
 dependencies {
     compile "org.fxmisc.richtext:richtextfx:1.0.0-SNAPSHOT"
     compile "org.fxmisc.cssfx:cssfx:1.0.0"
-    compile "com.aquafx-project:aquafx:0.2"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
