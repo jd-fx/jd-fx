@@ -1,12 +1,12 @@
-package com.adlerd
+package com.adlerd.gui.tabs
 
-import javafx.scene.control.Tab
+import com.adlerd.gui.CodePane
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import org.fxmisc.flowless.VirtualizedScrollPane
 import java.io.File
 
-class FileTab(file: File) : Tab() {
+class FileTab(file: File): CustomTab() {
     val codePane = CodePane()
     lateinit var icon: Image
 

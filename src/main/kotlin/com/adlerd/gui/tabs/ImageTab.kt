@@ -1,7 +1,6 @@
-package com.adlerd
+package com.adlerd.gui.tabs
 
 import javafx.scene.control.ScrollPane
-import javafx.scene.control.Tab
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
@@ -10,7 +9,7 @@ import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 import java.io.File
 
-class ImageTab(imageFile: File) : Tab() {
+class ImageTab(imageFile: File) : CustomTab() {
 
     val borderPane = BorderPane()
     val controlPane: HBox
