@@ -1,7 +1,10 @@
+# IGNORED PROJECT FOLDERS
 .idea
 out
-build
+target
+test
 
+# IGNORED FILES AND FILE EXTENSIONS
 *.class
 *.log
 *.jar
@@ -10,3 +13,7 @@ build
 *.rar
 hs_err_pid*
 *.iml
+*.exe
+
+# EXCEPTIONS
+!fernflower.jar
