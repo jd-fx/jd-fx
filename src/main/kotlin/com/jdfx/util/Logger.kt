@@ -1,6 +1,6 @@
-package com.adlerd.jdfx.util
+package com.jdfx.util
 
-import com.adlerd.jdfx.JDFX
+import com.jdfx.JDFX
 import java.io.File
 import java.io.IOException
 import java.io.PrintWriter

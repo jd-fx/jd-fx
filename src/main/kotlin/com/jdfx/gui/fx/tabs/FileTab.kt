@@ -1,7 +1,7 @@
-package com.adlerd.jdfx.gui.fx.tabs
+package com.jdfx.gui.fx.tabs
 
-import com.adlerd.jdfx.gui.fx.panes.SimpleCodePane
-import com.adlerd.jdfx.util.Loader.loadImg
+import com.jdfx.gui.fx.panes.SimpleCodePane
+import com.jdfx.util.Loader.loadImg
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import java.io.File

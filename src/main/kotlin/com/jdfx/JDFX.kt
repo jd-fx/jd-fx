@@ -1,11 +1,11 @@
-package com.adlerd.jdfx
+package com.jdfx
 
-import com.adlerd.jdfx.gui.fx.AppGUI
-import com.adlerd.jdfx.util.CommandLine
-import com.adlerd.jdfx.util.CustomException
-import com.adlerd.jdfx.util.Logger.debugln
-import com.adlerd.jdfx.util.Logger.infoln
-import com.adlerd.jdfx.util.Logger.warningln
+import com.jdfx.gui.fx.AppGUI
+import com.jdfx.util.CommandLine
+import com.jdfx.util.CustomException
+import com.jdfx.util.Logger.debugln
+import com.jdfx.util.Logger.infoln
+import com.jdfx.util.Logger.warningln
 import javafx.application.Application
 import java.io.BufferedReader
 import java.io.IOException

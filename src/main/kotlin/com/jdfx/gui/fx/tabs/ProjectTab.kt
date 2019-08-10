@@ -1,8 +1,8 @@
-package com.adlerd.jdfx.gui.fx.tabs
+package com.jdfx.gui.fx.tabs
 
-import com.adlerd.jdfx.gui.fx.AppGUI
-import com.adlerd.jdfx.util.Loader.loadImg
-import com.adlerd.jdfx.util.Logger.infoln
+import com.jdfx.gui.fx.AppGUI
+import com.jdfx.util.Loader.loadImg
+import com.jdfx.util.Logger.infoln
 import javafx.geometry.Insets
 import javafx.scene.control.TabPane
 import javafx.scene.control.TreeCell
@@ -57,7 +57,7 @@ class ProjectTab(projectLocation: File) : CustomTab() {
                         text = item.name
                         graphic = treeItem.graphic
                     } else {
-                        text = ""
+                        text = "--"
                         graphic = null
                     }
                 }

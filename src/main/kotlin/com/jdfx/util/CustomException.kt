@@ -1,4 +1,4 @@
-package com.adlerd.jdfx.util
+package com.jdfx.util
 
 abstract class CustomException : Exception {
     constructor()

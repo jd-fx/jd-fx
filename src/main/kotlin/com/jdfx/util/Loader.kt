@@ -1,7 +1,7 @@
-package com.adlerd.jdfx.util
+package com.jdfx.util
 
-import com.adlerd.jdfx.util.Logger.errorln
-import com.adlerd.jdfx.util.Logger.warningln
+import com.jdfx.util.Logger.errorln
+import com.jdfx.util.Logger.warningln
 import javafx.scene.image.Image
 
 object Loader {

@@ -1,4 +1,4 @@
-package com.adlerd.jdfx.gui.fx.panes
+package com.jdfx.gui.fx.panes
 
 import javafx.geometry.Point2D
 import javafx.scene.layout.BorderPane

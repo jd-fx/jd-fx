@@ -1,15 +1,15 @@
-package com.adlerd.jdfx.gui.fx
+package com.jdfx.gui.fx
 
-import com.adlerd.jdfx.JDFX
-import com.adlerd.jdfx.gui.fx.panes.ProjectPane
-import com.adlerd.jdfx.gui.fx.tabs.ProjectTab
-import com.adlerd.jdfx.util.Decompiler
-import com.adlerd.jdfx.util.Loader.loadImg
-import com.adlerd.jdfx.util.Loader.loadRes
-import com.adlerd.jdfx.util.Logger.debugln
-import com.adlerd.jdfx.util.Logger.errorln
-import com.adlerd.jdfx.util.Logger.infoln
-import com.adlerd.jdfx.util.Logger.warningln
+import com.jdfx.JDFX
+import com.jdfx.gui.fx.panes.ProjectPane
+import com.jdfx.gui.fx.tabs.ProjectTab
+import com.jdfx.util.Decompiler
+import com.jdfx.util.Loader.loadImg
+import com.jdfx.util.Loader.loadRes
+import com.jdfx.util.Logger.debugln
+import com.jdfx.util.Logger.errorln
+import com.jdfx.util.Logger.infoln
+import com.jdfx.util.Logger.warningln
 import javafx.application.Application
 import javafx.geometry.Insets
 import javafx.geometry.Orientation

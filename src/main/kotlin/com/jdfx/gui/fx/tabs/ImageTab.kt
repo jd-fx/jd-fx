@@ -1,4 +1,4 @@
-package com.adlerd.jdfx.gui.fx.tabs
+package com.jdfx.gui.fx.tabs
 
 import javafx.scene.control.ScrollPane
 import javafx.scene.image.Image

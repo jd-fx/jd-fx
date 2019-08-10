@@ -1,4 +1,4 @@
-package com.adlerd.jdfx.util
+package com.jdfx.util
 
 internal interface Command {
     val usage: String

@@ -1,4 +1,4 @@
-package com.adlerd.jdfx.util
+package com.jdfx.util
 
 import java.util.*
 
