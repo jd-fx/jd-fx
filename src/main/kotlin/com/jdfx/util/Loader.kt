@@ -1,7 +1,7 @@
 package com.jdfx.util
 
-import com.jdfx.util.Logger.errorln
-import com.jdfx.util.Logger.warningln
+import com.adlerd.logger.Logger.errorln
+import com.adlerd.logger.Logger.warnln
 import javafx.scene.image.Image
 
 object Loader {
@@ -20,7 +20,7 @@ object Loader {
         }
 
         // If resource load fails output warning and load nothing
-        warningln("Could not load ${this::class.java.getResource("")}$path!")
+        warnln("Could not load ${this::class.java.getResource("")}$path!")
         return ""
     }
 

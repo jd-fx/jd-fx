@@ -1,4 +1,4 @@
-package com.jdfx.gui.fx.tabs
+package com.jdfx.gui.tabs
 
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
@@ -6,10 +6,8 @@ import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.control.Tab
 
 abstract class CustomTab : Tab() {
-    val title = this.text ?: ""
 
     init {
-        this.text = title
         this.contextMenu = initContextMenu()
     }
 
@@ -21,7 +19,7 @@ abstract class CustomTab : Tab() {
         }
         val closeOthers = MenuItem("Close Others")
         closeOthers.setOnAction {
-            //TODO: Implement "Close Others" option
+            // TODO: Implement "Close Others" option
             for (tab in this.tabPane.tabs) {
                 if (tab != this) {
                     this.tabPane.tabs.remove(tab)

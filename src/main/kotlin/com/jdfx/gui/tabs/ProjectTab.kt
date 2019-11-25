@@ -1,8 +1,8 @@
-package com.jdfx.gui.fx.tabs
+package com.jdfx.gui.tabs
 
-import com.jdfx.gui.fx.AppGUI
+import com.adlerd.logger.Logger.infoln
+import com.jdfx.gui.GUI
 import com.jdfx.util.Loader.loadImg
-import com.jdfx.util.Logger.infoln
 import javafx.geometry.Insets
 import javafx.scene.control.TabPane
 import javafx.scene.control.TreeCell
@@ -35,16 +35,28 @@ class ProjectTab(projectLocation: File) : CustomTab() {
 
     init {
         this.packageImg = loadImg("img/folder.png", ICON_SIZE)
-        this.genericFileImg = loadImg("img/generic_file.png", ICON_SIZE)
-        this.javaFileImg = loadImg("img/small_java_file.png", ICON_SIZE)
-        this.classFileImg = loadImg("img/alt/file-class.png", ICON_SIZE)
-        this.imageFileImg = loadImg("img/alt/file-image.png", ICON_SIZE)
+        this.genericFileImg = loadImg(
+            "img/generic_file.png",
+            ICON_SIZE
+        )
+        this.javaFileImg = loadImg(
+            "img/small_java_file.png",
+            ICON_SIZE
+        )
+        this.classFileImg = loadImg(
+            "img/alt/file-class.png",
+            ICON_SIZE
+        )
+        this.imageFileImg = loadImg(
+            "img/alt/file-image.png",
+            ICON_SIZE
+        )
 
         this.text = projectLocation.name
 
         // Make sure the project gets cleared from the open files list when closed
         this.setOnCloseRequest {
-            AppGUI.openFiles.remove(this.text)
+            GUI.openFiles.remove(this.text)
         }
         // Set up project's TreeView and its TreeCells
         projectTree.isEditable = false

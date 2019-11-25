@@ -1,20 +1,18 @@
 package com.jdfx
 
-import com.jdfx.gui.fx.AppGUI
+import com.adlerd.logger.Logger.*
+import com.jdfx.gui.GUI
 import com.jdfx.util.CommandLine
 import com.jdfx.util.CustomException
-import com.jdfx.util.Logger.debugln
-import com.jdfx.util.Logger.infoln
-import com.jdfx.util.Logger.warningln
 import javafx.application.Application
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 
-object JDFX {
+object Main {
     const val TITLE = "Java Decompiler - FX"
     const val VERSION = "1.0.0"
-    private var GRAPHICAL_MODE = true
+    private var graphicalMode = true
     private var isContinueMode = false
 
     private fun getVersion(): String {
@@ -30,24 +28,20 @@ object JDFX {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        infoln("${getVersion()}\n")
+        infoln(getVersion())
 
         var argPos = 0
         while (argPos < args.size) {
             when {
-                args[argPos].equals("-t", ignoreCase = true) -> GRAPHICAL_MODE = false
+                args[argPos].equals("-t", ignoreCase = true) -> graphicalMode = false
                 args[argPos].equals("-file", ignoreCase = true) -> {
-                    //TODO: Logic for dealing with immediate decompiling of file
+                }
+                args[argPos].equals("-o", ignoreCase = true) -> {
                 }
                 else -> {
-                    if (args[argPos].equals("-o", ignoreCase = true)) {
-
-                    } else {
-                        warningln("Argument '${args[argPos]}' not recognized")
-                        printUsage()
-                        return
-                    }
-
+                    warnln("Argument '${args[argPos]}' not recognized")
+                    printUsage()
+                    return
                 }
             }
             ++argPos
@@ -55,10 +49,10 @@ object JDFX {
 
         val commandLine = CommandLine()
 
-        if (GRAPHICAL_MODE) {
-            debugln("Loading graphical interface...\n", this::class.java)
-            Application.launch(AppGUI::class.java)
-            debugln("Closing graphical interface...\n", this::class.java)
+        if (graphicalMode) {
+            debugln("Loading graphical interface...")
+            Application.launch(GUI::class.java)
+            debugln("Closing graphical interface...")
         } else {
             try {
                 val reader = BufferedReader(InputStreamReader(System.`in`))

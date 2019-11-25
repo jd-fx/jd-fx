@@ -1,7 +1,7 @@
-package com.jdfx.util
+package com.jdfx
 
+import com.adlerd.logger.Logger.infoln
 import com.jdfx.util.Loader.loadRes
-import com.jdfx.util.Logger.infoln
 import java.io.File
 import java.io.IOException
 

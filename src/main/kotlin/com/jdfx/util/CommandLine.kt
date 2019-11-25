@@ -138,6 +138,15 @@ class CommandLine {
     companion object {
         const val PROMPT = "\n>>> "
     }
+
+    internal interface Command {
+        val usage: String
+
+        val help: String
+
+        @Throws(CustomException::class)
+        fun doCommand(paramArrayOfString: Array<String>, paramInt: Int): String
+    }
 }
 
 

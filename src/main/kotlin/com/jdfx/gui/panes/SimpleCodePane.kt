@@ -1,4 +1,4 @@
-package com.jdfx.gui.fx.panes
+package com.jdfx.gui.panes
 
 import javafx.geometry.Point2D
 import javafx.scene.layout.BorderPane
@@ -47,11 +47,11 @@ open class SimpleCodePane : BorderPane() {
     }
 
     // TODO: Implement search for word/phrase in the code areas/projects
-    fun findString(string: String) {
-
+    fun findString(string: String): Int {
+        return 0
     }
 
     companion object {
-        val START = Point2D(0.0, 0.0)
+        val region: Pair<Point2D, Point2D> = Pair(Point2D(0.0, 0.0), Point2D(0.0, 0.0))
     }
 }

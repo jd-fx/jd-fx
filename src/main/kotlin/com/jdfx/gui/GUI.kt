@@ -1,15 +1,14 @@
-package com.jdfx.gui.fx
+package com.jdfx.gui
 
-import com.jdfx.JDFX
-import com.jdfx.gui.fx.panes.ProjectPane
-import com.jdfx.gui.fx.tabs.ProjectTab
-import com.jdfx.util.Decompiler
+import com.adlerd.logger.Logger.*
+import com.jdfx.Decompiler
+import com.jdfx.Main
+import com.jdfx.gui.panes.ProjectPane
+import com.jdfx.gui.tabs.CustomTab
+import com.jdfx.gui.tabs.FileTab
+import com.jdfx.gui.tabs.ProjectTab
 import com.jdfx.util.Loader.loadImg
 import com.jdfx.util.Loader.loadRes
-import com.jdfx.util.Logger.debugln
-import com.jdfx.util.Logger.errorln
-import com.jdfx.util.Logger.infoln
-import com.jdfx.util.Logger.warningln
 import javafx.application.Application
 import javafx.geometry.Insets
 import javafx.geometry.Orientation
@@ -36,7 +35,7 @@ import java.net.URL
 import kotlin.system.exitProcess
 
 
-class AppGUI : Application() {
+class GUI : Application() {
 
     private lateinit var window: Stage
 
@@ -51,6 +50,7 @@ class AppGUI : Application() {
     private val exitItem = MenuItem("Exit")
     // Edit menu
     private val editMenu = Menu("Edit")
+    private val cutItem = MenuItem("Cut")
     private val copyItem = MenuItem("Copy")
     private val pasteItem = MenuItem("Paste Log")
     private val selectAllItem = MenuItem("Select all")
@@ -77,6 +77,9 @@ class AppGUI : Application() {
     private lateinit var bottomBar: HBox
     private lateinit var menuBar: MenuBar
 
+    private val selectedTab: CustomTab?
+        get() = this.projectPane.selectedTab
+
     override fun start(stage: Stage) {
 
         window = stage
@@ -100,7 +103,7 @@ class AppGUI : Application() {
         menuBar.isUseSystemMenuBar = true
         window.scene = scene
         window.title = "Java Decompiler"
-        window.icons.add(loadImg("img/jd_icon_128.png"))
+        window.icons.add(loadImg("img/icon/jd_icon_128.png"))
 
         // Show window
         window.show()
@@ -256,17 +259,37 @@ class AppGUI : Application() {
         )
 
         // Edit menu
-        copyItem.isDisable = true
+        cutItem.graphic = MenuIcon("img/cut.png")
+        cutItem.setOnAction {
+            if (this.selectedTab is FileTab) {
+                (this.selectedTab!! as FileTab).cut()
+            }
+        }
         copyItem.graphic = MenuIcon("img/copy.png")
-        copyItem.setOnAction { }
-        pasteItem.isDisable = true
+        copyItem.setOnAction {
+            if (this.selectedTab is FileTab) {
+                (this.selectedTab!! as FileTab).copy()
+            }
+        }
         pasteItem.graphic = MenuIcon("img/paste.png")
-        pasteItem.setOnAction { }
+        pasteItem.setOnAction {
+            if (this.selectedTab is FileTab) {
+                (this.selectedTab!! as FileTab).paste()
+            }
+        }
         selectAllItem.isDisable = true
         selectAllItem.setOnAction { }
         findItem.isDisable = true
         findItem.setOnAction { }
-        editMenu.items.addAll(copyItem, pasteItem, SeparatorMenuItem(), selectAllItem, SeparatorMenuItem(), findItem)
+        editMenu.items.addAll(
+            cutItem,
+            copyItem,
+            pasteItem,
+            SeparatorMenuItem(),
+            selectAllItem,
+            SeparatorMenuItem(),
+            findItem
+        )
 
         // Navigation menu
         openTypeItem.isDisable = true
@@ -287,7 +310,7 @@ class AppGUI : Application() {
         // Help menu
         wikiItem.setOnAction {
             try {
-                Desktop.getDesktop().browse(URL("https://github.com/dadler64/jd-fx/wiki").toURI())
+                Desktop.getDesktop().browse(URL("https://github.com/jd-fx/jd-fx/wiki").toURI())
             } catch (e: IOException) {
                 errorln("Could not open link")
                 e.printStackTrace()
@@ -300,7 +323,7 @@ class AppGUI : Application() {
         prefItem.setOnAction { }
         aboutItem.setOnAction {
             val dialog = Stage()
-            dialog.title = "About - ${JDFX.TITLE} v${JDFX.VERSION}"
+            dialog.title = "About - ${Main.TITLE} v${Main.VERSION}"
             dialog.initModality(Modality.APPLICATION_MODAL)
             dialog.initOwner(window)
             val dialogVbox = VBox(20.0)
@@ -402,7 +425,7 @@ class AppGUI : Application() {
             }
 
             if (!isAlreadyOpen) {
-                debugln("Project dir path: $projectDir", this::class.java)
+                debugln("Project dir path: $projectDir")
 
                 // Decompile Jar on a separate thread
                 val decompiler = Decompiler(jarFile, projectDir)
@@ -412,7 +435,7 @@ class AppGUI : Application() {
                 this.projectPane.tabPane.tabs.add(ProjectTab(projectDir))
                 openFiles.add(projectName)
             } else {
-                warningln("Jar \"$projectName.jar\" is already decompiled in another tab!")
+                warnln("Jar \"$projectName.jar\" is already decompiled in another tab!")
             }
         } else {
             infoln("$jarFile could not be selected")
@@ -421,7 +444,6 @@ class AppGUI : Application() {
     }
 
     companion object {
-        private const val MENU_ICON_SIZE = 16.0
         val openFiles = ArrayList<String>()
     }
 

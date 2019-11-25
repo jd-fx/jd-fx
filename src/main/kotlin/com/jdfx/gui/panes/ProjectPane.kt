@@ -1,6 +1,6 @@
-package com.jdfx.gui.fx.panes
+package com.jdfx.gui.panes
 
-import com.jdfx.gui.fx.tabs.CustomTab
+import com.jdfx.gui.tabs.CustomTab
 import javafx.geometry.Pos
 import javafx.scene.control.Label
 import javafx.scene.control.TabPane

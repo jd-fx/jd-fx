@@ -1,4 +1,4 @@
-package com.adlerd.gui.tabs
+package com.jdfx.gui.tabs
 
 import javafx.scene.control.ScrollPane
 import javafx.scene.image.Image
@@ -11,9 +11,9 @@ import java.io.File
 
 class ImageTab(imageFile: File) : CustomTab() {
 
-    val borderPane = BorderPane()
-    val controlPane: HBox
-    val imagePane: ImageView
+    private val borderPane = BorderPane()
+    private val controlPane: HBox
+    private val imagePane: ImageView
     val image: Image
 
     init {
@@ -33,6 +33,30 @@ class ImageTab(imageFile: File) : CustomTab() {
 //        borderPane.maxWidth = this.tabPane.maxWidth-300.0
 
         this.content = borderPane
+    }
+
+    fun centerImage() {
+        val img = imagePane.image
+        if (img != null) {
+            val w: Double
+            val h: Double
+
+            val ratioX = imagePane.fitWidth / img.width
+            val ratioY = imagePane.fitHeight / img.height
+
+            val reduceCoeff = if (ratioX >= ratioY) {
+                ratioY
+            } else {
+                ratioX
+            }
+
+            w = img.width * reduceCoeff
+            h = img.height * reduceCoeff
+
+            imagePane.x = (imagePane.fitWidth - w) / 2
+            imagePane.y = (imagePane.fitHeight - h) / 2
+
+        }
     }
 
     private fun initControls(): HBox {
